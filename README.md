@@ -1,17 +1,5 @@
 
 
-
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
-
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- **[Romega Software](https://romegasoftware.com)**
-
 ## Larareaction
 
 A simple way of handling reactions or ratings in Laravel.
@@ -19,51 +7,50 @@ A simple way of handling reactions or ratings in Laravel.
 ## Features
 
 - Reactions
-    - One user reaction per model (and additional store requests are updates)
-    - One Reaction Type per Reaction and Model (e.g. cannot have like/dislike for Photos and star rating)
+    - Reaction types = Applause; Like-Dislike; 1-5 Stars; etc.
+    - Reactable models (models that can be reacted to) are predefined
+    - One user reaction per reactable model
+    - One reaction type per reaction and model (e.g. cannot have like/dislike for Photos and star rating)
+    - Storing an existing reaction overwrites it
 
-- Reaction Types
-    - Built in Types
-        - Applause
-        - Like /Dislike
-        ...
-    - Custom Types: min, max, discrete (integer)/non-discrete (float), icons and any names associated with values in range
+    - Only authenticated users can leave reactions
+    - Users can only update or delete their own reactions
+    - Users can only react to a predefined set of reactable models
 
-- Authorization
-    - only authenticated users can leave reactions
-    - users can only update or delete their own reaction
+- Reaction types
+    - defined by range_type (int, float), min, max values
 
-- Validation
-    - users can only react to a predefined set of Reactable Models (see config file)
-    - reactions must be "numeric"
-    - reactable_types must be strings
-
-- Tests
-    - ZZZZ
+- Built in types
+    - Applause
+    - Like/Dislike
 
 
-## Design Choices
-- Independence from rest of Laravel Application; [complete independence???]
-    - i) no interaction with eloquent [facade call only]
-    - ii) Use
-        - If app is part of standalone Laravel project, use one Facade call only
-        - If app is microservice, use rest routes only
-    - PRO:
-        - adding, removing, updating reactions is simpler in basic crud cases
-        - updates / changes to reactions versions can't affect rest of app
-        - can create independent reactions microservice in architectures with different languages and frameworks
-        - Integration with Relational or NOSQL Databases simple
-        - Use of NOSQL DBS is simple; no changes to Facade
-    - CON: can't integrate with eloquent models and queries
-        - makes existing complex Eloquent queries in app a two/three-step process
+## Usage
 
-- Reaction Types
-    - defined by minimum range values, integer/float: is this a problem in some cases?
-    - developers can create any custom reaction type (as long as int/float, (optionally) have names, reactable): Is this a problem? Does it need to be constrained further?
+Larareact::react('App\Models\Image', 2, Const::LIKE);
+Larareact::react(get_class($this), 2, Const::LIKE);
 
-- Validation: stats request use form parameters
-    - should it be POST with JSON body or GET request with uri parameters
-    - REST Api best practices??
+## Custom Types
+
+- Michelin Stars
+    - range_type: int
+    - min: 1
+    - max: 3
+    - names: [ 1 => '1 Michelin Star', 2 => '', 3 => '' ]
+    - icons: [ 1 => '1-star.png', 2 => '2-stars.png', 3 => '3-stars.png' ]
+
+- Voting
+    - range_type: int
+    - min: 1
+    - max: 2
+    - names: [ 1 => 'In Favor', 2 => 'Against' ]
+
+- Hot-Cold
+    - range_type: float
+    - min: 1
+    - max: 5
+    - names: [ 1 => 'Freezing', 2 => 'Cold', 3 => 'Medium', 4 => 'Warm', 5 => 'Hot' ]
+    - icons: [ 1 => 'freezing.png', 5 => 'hot.png' ]
 
 ## License
 
