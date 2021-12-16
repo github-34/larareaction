@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ReactableModel;
 use App\Models\Reaction;
 use App\Models\ReactionType;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,7 @@ class ReactionService
         return Reaction::findOrFail($id);
     }
 
-    public function store(array $validatedInput): Reaction
+    public function storeOrUpdate(array $validatedInput): Reaction
     {
         $reaction = Reaction::where([
             'reactable_type' => $validatedInput['reactable_type'],
@@ -30,7 +31,7 @@ class ReactionService
         ])->first();
 
         $inputReaction = $validatedInput['reaction'];
-        $reactionValue = (is_numeric($inputReaction) && strpos($inputReaction, ".") !== false) ? floatval($inputReaction) :  intval($inputReaction);
+        $reactionValue = (is_numeric($inputReaction) && strpos($inputReaction, ".") !== false) ? floatval($inputReaction) : intval($inputReaction);
 
         // Create new Reaction
         if (is_null($reaction))
@@ -43,15 +44,16 @@ class ReactionService
             ]);
 
         // Update Existing Reaction
-        return $reaction->fill([
+        $updatedReaction = $reaction->fill([
             'reactable_type' => $validatedInput['reactable_type'],
             'reactable_id' => $validatedInput['reactable_id'],
             'user_id' => Auth::user()->id,
             'reaction' => $reactionValue,
             'updated_from' => $this->getIP()
         ]);
+        $updatedReaction->save();
 
-        return $reaction;
+        return $updatedReaction;
     }
 
     public function update(Reaction $reaction, array $validatedInput): Reaction
@@ -75,13 +77,13 @@ class ReactionService
     public function stats(String $reactable_type, int $reactable_id)
     {
 
-        $reactableObject = ReactableModel :: where('reactable_type', $reactable_type )->first();
+        $reactableObject = ReactableModel::where('reactable_type', $reactable_type)->first();
         $type = ReactionType::find($reactableObject->reaction_type_id);
         $reactions = Reaction::where('reactable_id', $reactable_id)->get();
         $avg = $reactions->avg('reaction');
         $count = $reactions->count();
 
-        if ($type->isDiscrete()) {
+        if ($type->isRangeInt()) {
             $valueGrp = $reactions->groupBy('reaction');
             $valueCounts = [];
             foreach ($valueGrp as $key => $grp)
@@ -101,18 +103,26 @@ class ReactionService
             'count' => $count,
             'type' => $type->toArray()
         ];
-     }
+    }
 
+    public function react(Object $object, $value)
+    {
+        // extract from object reactable_type, reactable_id
+        // validate reactable_type, reactable_id - can it be reacted to?
+        // validate reaction - is it in range for reaction-type?
+        $validatedInput = ['reactable_type' => 'App\Models\Image', 'reactable_id' => $object->id, 'reaction' => $value];
+        // dd($validatedInput);
+        $reaction = $this->storeOrUpdate($validatedInput);
+
+        return $reaction;
+    }
 
     // different class or traits
     public function getIP()
     {
-        foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key)
-        {
-            if (array_key_exists($key, $_SERVER) === true)
-            {
-                foreach (explode(',', $_SERVER[$key]) as $ip)
-                {
+        foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key) {
+            if (array_key_exists($key, $_SERVER) === true) {
+                foreach (explode(',', $_SERVER[$key]) as $ip) {
                     $ip = trim($ip); // just to be safe
                     if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
                         return $ip;

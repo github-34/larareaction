@@ -1,44 +1,28 @@
 # Todo
+- reaction type constants for facades calls
+- Sample Blade UI (Star Rating)
 
 ## Improvements
 - use eloquent between the reaction, reaction type models
 
 ## Features: Implementation
-
-- Sample Blade UI (Star Rating)
 - Service Provider
-- Dependency Injection for Service in Controller
 - Facades for Getting User Reactions, ModelId Reactions, ModelId Reaction Stats [need Service Provider First]
-    - design choice:
-        - traits are not added to models that are "reactable"
-        - no use of eloquent to get model reaction (e.g. $user->reactions(), $image->reactions() ); instead, Facades are always used: Reactions::getForModel($image), Reactions::getForModel($user)
-            - reason: decouples reactions code entirely from
-                - at the same time give easy facade call to get same functionalirt.
-            - con: may complicate or make less readable moderately complicated queriers (since cant assemble them with eloquent query builder)
-            - con??: can't do eager/lazy loading
-        - WHY IS Decoupling DONE?
-            - within single application: simple uses of reactions are easy and readable with terse Facade syntax
-            - the app can be offered as a microservice, in pretty much the same form, that only deals with reactions
 - Mongo Compatibility
 - Caching
 - Optimization (Basic):
     - database indexes
     - STATS: don't check that the reactable exists & reactable-reactable_id exists every time stats is requested 
         [implement caching first???]
-
 - Testing
     - testing environment: separate db service in docker for testing;
     - remove ids from seeders; user factories
     - large datasets & times
+- Exception handling Independent of Handler
+- API Documentation: routes, return codes, exceptions
 - Observers for Analytics
 - Authentication: token, JWT in addition to session/cookie
 - Backward Compatibility for Laravel 7, 6, etc.
-- Independent Exception handling (
-    Api based; placement of exceptions????
-    make reaction exceptions independent from rest of laravel;
-    e.g. authorization exceptions can be in policy response instead of true/false return
-- API Documentation: routes, return codes, exceptions
-
 ## Features: Use Cases
 - Trending
 - Viewings: add record of model viewed by specific users
@@ -74,7 +58,7 @@
 
 # Backburner
 - Confusing Naming: ReactonTypes (model) vs reactable_type: ReactionKinds?????
-- Do we need precision values on non-discrete reaction types??? [Nah]
+- Do we need precision values on float range reaction types??? [Nah]
 - Do we need ReactionTypes with name/value ranges specified as lower AND upper bound of range?
     - Right now, the, say, lowest value can be used to specify the range: 2200 for Grandmaster (2200-2499), 2500 International Grandmaster (2500-2699), 2700 Super Grandmaster (2700+)
 
@@ -97,6 +81,33 @@
     - Comptaiblity with REDIS only
     - Use Lumen instead
     - use python instead????
+
+
+    - Facades: design choice:
+        - traits are not added to models that are "reactable"
+        - no use of eloquent to get model reaction (e.g. $user->reactions(), $image->reactions() ); instead, Facades are always used: Reactions::getForModel($image), Reactions::getForModel($user)
+            - reason: decouples reactions code entirely from
+                - at the same time give easy facade call to get same functionality.
+            - con: may complicate or make less readable moderately complicated queriers (since cant assemble them with eloquent query builder)
+            - con??: can't do eager/lazy loading
+        - WHY IS Decoupling DONE?
+            - within single application: simple uses of reactions are easy and readable with terse Facade syntax
+            - the app can be offered as a microservice, in pretty much the same form, that only deals with reactions
+## Design Choices
+- Independence from rest of Laravel Application; [complete independence???]
+    - i) no interaction with eloquent [facade call only]
+    - ii) Use
+        - If app is part of standalone Laravel project, use one Facade call only
+        - If app is microservice, use rest routes only
+    - PRO:
+        - adding, removing, updating reactions is simpler in basic crud cases
+        - updates / changes to reactions versions can't affect rest of app
+        - can create independent reactions microservice in architectures with different languages and frameworks
+        - Integration with Relational or NoSQL Databases simple
+        - Use of NoSQL DBS is simple; no changes to Facade
+    - CON: can't integrate with eloquent models and queries
+        - makes existing complex Eloquent queries in app a two/three-step process
+
 
 <!--
 public function storeGuestReaction(array $validatedInputInput)
@@ -190,3 +201,4 @@ Config
 'api-routes' => false,
 'soft_deletes' => true,
 'load_migrations' => true, --> --> -->
+

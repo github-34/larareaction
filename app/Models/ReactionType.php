@@ -9,9 +9,13 @@ class ReactionType extends Model
 {
     use HasFactory;
 
-
-    public function isDiscrete()
+    public function isRangeInt()
     {
-        return $this->discrete;
+        return $this->range_type == 'int';
+    }
+
+    public function isRangeFloat()
+    {
+        return $this->range_type == 'float';
     }
 }

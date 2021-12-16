@@ -27,16 +27,16 @@ A simple way of handling reactions or ratings in Laravel.
 
 ## Usage
 
-Larareact::react('App\Models\Image', 2, Const::LIKE);
-Larareact::react(get_class($this), 2, Const::LIKE);
+    Larareact::react('App\Models\Image', 2, Const::LIKE);
+    Larareact::react(get_class($this), 2, Const::LIKE);
 
-## Custom Types
+## Examples of Definition of Custom Types
 
 - Michelin Stars
     - range_type: int
     - min: 1
     - max: 3
-    - names: [ 1 => '1 Michelin Star', 2 => '', 3 => '' ]
+    - names: [ 1 => '1 Michelin Star', 2 => '2 Michelin Stars', 3 => '3 Michelin Stars' ]
     - icons: [ 1 => '1-star.png', 2 => '2-stars.png', 3 => '3-stars.png' ]
 
 - Voting
@@ -44,6 +44,7 @@ Larareact::react(get_class($this), 2, Const::LIKE);
     - min: 1
     - max: 2
     - names: [ 1 => 'In Favor', 2 => 'Against' ]
+    - icons: null
 
 - Hot-Cold
     - range_type: float

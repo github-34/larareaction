@@ -20,13 +20,11 @@ use Illuminate\Validation\ValidationException;
 /**
  * Reaction Controller
  *
- * Reaction controller handles all reaction requests.
- *
- * It has four functions, typically in order:
- *      1. authorize request (required)
+ * Reaction controller handles all reaction (api/reaction/*) requests, typically in the following order.
+ *      1. authorize request (always)
  *      2. validate non-form input (if necessary)
- *      3. call service to perform function (if necessary)
- *      4. assemble and return api response or view (required)
+ *      3. call services methods, send notifications, dispatch jobs (if necessary)
+ *      4. assemble and return api response (always)
  *
  * @version 0.1
  * @access public
@@ -36,9 +34,12 @@ class ReactionController extends Controller
 {
     protected $service;
 
-    public function __construct()
+    public function __construct(ReactionService $service)
     {
-        $this->service = new ReactionService();
+        $this->service = $service;
+
+        if (App::environment() == 'local')
+            Auth::login(User::find(1));
     }
 
     public function index()
@@ -54,20 +55,22 @@ class ReactionController extends Controller
 
         return $this->apiSuccessResponse([
                 'reaction' => $reaction,
-                'stats' => $this->service->stats($reaction->reactable_type, $reaction->reactable_id)],
-        'Reaction retrieved successfully');
+                'stats' => $this->service->stats($reaction->reactable_type, $reaction->reactable_id)
+            ],
+            'Reaction retrieved successfully'
+        );
     }
 
     /**
      * Note: reactable_id is assumed to exit. There is no validation on whether that model exists.
      */
-    public function store(StoreReactionRequest $request)
+    public function storeOrUpdate(StoreReactionRequest $request)
     {
         $this->authorize('create', Reaction::class);
 
         $validated = $request->validated();
 
-        $reaction = $this->service->store($validated);
+        $reaction = $this->service->storeOrUpdate($validated);
 
         return $this->apiSuccessResponse($reaction, 'Reaction created successfully');
     }
@@ -83,12 +86,12 @@ class ReactionController extends Controller
         $validated = $request->validated();
 
         // Validate reaction is in min-max range as defined in its reaction type
-        $reactableModel = ReactableModel::where('reactable_type','=',$reaction->reactable_type)->first();
-        $reactionType = ReactionType::where('id','=',$reactableModel->reaction_type_id)->first();
+        $reactableModel = ReactableModel::where('reactable_type', '=', $reaction->reactable_type)->first();
+        $reactionType = ReactionType::where('id', '=', $reactableModel->reaction_type_id)->first();
         if ($validated['reaction'] < $reactionType->min)
-            throw ValidationException::withMessages([ 'reaction' =>   ["reaction cannot be less than ".$reactionType->min ] ]);
+            throw ValidationException::withMessages(['reaction' =>   ["reaction cannot be less than " . $reactionType->min]]);
         if ($validated['reaction'] > $reactionType->max)
-            throw ValidationException::withMessages([ 'reaction' => [ "reaction cannot be greater than ".$reactionType->max ] ]);
+            throw ValidationException::withMessages(['reaction' => ["reaction cannot be greater than " . $reactionType->max]]);
 
         $reaction = $this->service->update($reaction, $validated);
 
@@ -118,7 +121,7 @@ class ReactionController extends Controller
         $validated = $request->validated();
 
         // TODO: authorization: can guest users get stats for any reactable/reactable_id????
-        // $this->authorize('viewStats',$reactable, $reactable_id);
+        // $this->authorize('viewStats', $reactable, $reactable_id);
 
         $stats  = $this->service->stats($validated['reactable_type'], $validated['reactable_id']);
 
@@ -127,7 +130,7 @@ class ReactionController extends Controller
 
     public function apiSuccessResponse($data, $message = '')
     {
-        return response()->json([ 'status' => 'ok', 'http_code' => 200, 'data' => $data, 'message' => $message ]);
+        return response()->json(['status' => 'ok', 'http_code' => 200, 'data' => $data, 'message' => $message]);
     }
 
     public function isStringFloat(String $str)

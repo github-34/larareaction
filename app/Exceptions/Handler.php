@@ -7,6 +7,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
@@ -60,14 +61,15 @@ class Handler extends ExceptionHandler
                 return response()->json(['status' => 'error', 'code' => Response::HTTP_FORBIDDEN, 'message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
         });
         $this->renderable(function (Throwable $e, $request) {
-            if ($request->is('api/*'))
-                return response()->json(['status' => 'error', 'code' => Response::HTTP_INTERNAL_SERVER_ERROR, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            // if ($request->is('api/*'))
+            //     return response()->json(['status' => 'error', 'code' => Response::HTTP_INTERNAL_SERVER_ERROR, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         });
 
         $this->reportable(function (Throwable $e) {
-            if (request()->is('api/*')) {
-                return response()->json(['status' => 'error', 'code' => Response::HTTP_INTERNAL_SERVER_ERROR, 'message' => ''], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
+            Log::debug($e->getMessage());
+            // if (request()->is('api/*')) {
+            //     return response()->json(['status' => 'error', 'code' => Response::HTTP_INTERNAL_SERVER_ERROR, 'message' => ''], Response::HTTP_INTERNAL_SERVER_ERROR);
+            // }
         });
     }
 }

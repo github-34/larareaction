@@ -16,8 +16,8 @@ class CreateReactionsTable extends Migration
         Schema::create('reactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->morphs('reactable');             // 1: reactable_type: App\Models\Image (nullable); 2: reactable_id: 2(nullable)
-            $table->float('reaction');                      // reactions are either integers (discrete types) or floats (non-discrete types)
+            $table->morphs('reactable');                          // two columns: 1: reactable_type: e.g. App\Models\Image (nullable); 2: reactable_id: e.g. 2 (nullable)
+            $table->float('reaction');
             $table->ipAddress('created_from');
             $table->ipAddress('updated_from')->nullable();
             $table->ipAddress('deleted_from')->nullable();

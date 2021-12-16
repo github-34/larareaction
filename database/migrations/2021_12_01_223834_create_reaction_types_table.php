@@ -16,14 +16,13 @@ class CreateReactionTypesTable extends Migration
         Schema::create('reaction_types', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->boolean('discrete');        // true => discrete / integer, false => non-discrete / float
+            $table->enum( 'range_type',['int', 'float']);
             $table->integer('min');
             $table->integer('max');
-            $table->json('icons')->nullable();  // [ x => 'url/path' ], x is integer that corresponds to value in range
-            $table->json('names')->nullable();  // [ x => 'name' ], x is integer that corresponds to value in range.
-
-            $table->softDeletes();
+            $table->json('icons')->nullable();                            // [ x => 'url/path' ], x is integer that corresponds to value in range
+            $table->json('labels')->nullable();                           // [ x => 'label' ], x is integer that corresponds to value in range.
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

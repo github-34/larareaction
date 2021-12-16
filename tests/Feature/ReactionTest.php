@@ -373,7 +373,6 @@ class ReactionTest extends TestCase
         ]);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertSee('Retrieved stats successfully');
-        $response->dump();
       }
 
       public function test_guest_can_get_reactable_stats()

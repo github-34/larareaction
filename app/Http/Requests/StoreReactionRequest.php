@@ -99,7 +99,7 @@ class StoreReactionRequest extends FormRequest
                     $reactionType = ReactionType::where('id','=',$reactableModel->reaction_type_id)->first();
                     // reaction is float
                     if (is_numeric($data['reaction']) && strpos($data['reaction'], '.') !== false)
-                        if ($reactionType->isDiscrete())
+                        if ($reactionType->isRangeInt())
                         {
                             $validator->errors()->add('reactable_id', 'Invalid reaction value: should be integer');
                             return;
@@ -112,10 +112,8 @@ class StoreReactionRequest extends FormRequest
                         return;
                     }
                 }
-
             }
         }
     );
-
    }
 }
