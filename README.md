@@ -1,5 +1,3 @@
-
-
 ## Laraexpress
 
 A simple way of handling expressions, reactions and ratings in Laravel.
@@ -16,7 +14,6 @@ A simple way of handling expressions, reactions and ratings in Laravel.
     - Only authenticated users can store expressions
     - Users can only update or delete their own expressions
     - Users can only have expressions to predefined set of expressable models
-
 
 - Built in types
     - Applause
@@ -44,11 +41,32 @@ A simple way of handling expressions, reactions and ratings in Laravel.
     $expression = Express::express($bill, Express::VOTE, Express::INFAVOR);
 ```
 
-- Adding Expressable Models and Types
-    1. If necessary, add custom type: add record to expression_types table or to seeder
-    2. Add record to ExpressableModel: one for each type and expressable model pair
-    3. Add class constants for desired preset values to App\Expression\Expression.php
-    4. use as above
+- For adding Custom Type, do the following.
+    1. Add new Custom ExpressionType
+        - Add record to ExpressionType Model via ExpressionTypes Seeder in DatabaseSeeder.php (or insert record into table)
+        - Example: a custom type for expressing love
+            ExpressionType::create([ 
+                'id' => 11, 'description' => 'Love Rating from 1 to 5',
+                'range_type' => 'int', 'min' => 1, 'max' => 5,
+                'icons' => json_encode([    1 => 'icons/smallheart.png', 3 => 'icons/bigheart.png', 5 => 'icons/hugetheart.png']),
+                'labels' => json_encode([   1 => 'love',  3 => 'luv', 5 => 'huge luv' ])]);
+
+    2. Add what models users can make custom type expressions to
+        - Add records to ExpressableModel via ExpressableModelSeeder in DatabaseSeeder
+        - Example: users can leave love expressions to the user and image models
+            ExpressableModel::create([ 'id' => 4, 'expressable_type' => 'App\Models\User',   'expression_type_id' => 11 ]);
+            ExpressableModel::create([ 'id' => 4, 'expressable_type' => 'App\Models\Image',  'expression_type_id' => 11 ]);
+
+    3. Add constants for each desired preset values to Xpress.php
+        const LOVERTG = 11;    // corresponds to id in expression_type_table
+
+        const LOVE = 1;
+        const LUV = 3;
+        const HUGELUV = 5;
+
+    4. Use Facades as above
+        $expression = Express::express($image, Express::LOVERTG, Express::HUGELUV);
+        $expression = Express::express($user,  Express::LOVERTG, Express::LUV);
 
 ## Examples of Definition of Custom Types
 
