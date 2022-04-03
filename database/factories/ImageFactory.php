@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Image;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ImageFactory extends Factory
@@ -22,9 +23,9 @@ class ImageFactory extends Factory
     public function definition()
     {
         return [
-            // 'user_id' => 18,
+            'user_id' => User::all()->random()->id,
             'title' => $this->faker->unique()->streetName,
-            'url' => $this->faker->unique()->url,
+            'url' => 'http://localhost/'.substr($this->faker->image('public/images',400,300),7),
             'public' => $this->faker->boolean,
         ];
     }

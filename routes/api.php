@@ -1,10 +1,13 @@
 <?php
 
-use App\Http\Controllers\ReactionController;
 use App\Models\Image;
-use App\Models\Reaction;
 use App\Models\User;
-use App\Services\Facades\React;
+
+use App\Express\Models\Expression;
+use App\Express\ExpressionService;
+use App\Express\Xpress;
+use App\Express\Facades\Express;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -25,19 +28,25 @@ Route::middleware('')->get('user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('imagereact', function (Request $request) {
-    $image = Image::all()->first();
+Route::get('imageexpress', function (Request $request) {
     Auth::login(User::find(1));
-    $re = React::react($image, 0);
-    $reaction = Reaction::where('reactable_id', $image->id)->where('reactable_type','App\Models\Image')->first();
-    return $reaction;
+    $image = Image::all()->first();
+    Express::express($image, Xpress::FIVESTAR, Xpress::FIVESTARS);
+    Express::express($image, Xpress::MICHELINSTAR, Xpress::TWOMICHELINSTARS);
+    Express::express($image, Xpress::EMOTIVE, Xpress::HAPPY);
+
+    return Expression::where('expressable_id', $image->id)->where('expressable_type','App\Models\Image')->where('user_id',1)->get();
+});
+
+Route::get('imageexpressioninfo', function (Request $request, ExpressionService $service) {
+    Auth::login(User::find(1));
+    $images = Image::all();
+    return $service->obtainExpressableInfo($images);
 });
 Route::middleware(['auth'])->group(function () {
-    Route::get('reactions/types',              [ReactionController::class, 'types'])->name('api.reactions.types');
-    Route::get('reactions',                    [ReactionController::class, 'index'])->name('api.reactions.index');
-    Route::get('reactions/{reaction}',         [ReactionController::class, 'show'])->name('api.reactions.show');
-    Route::post('reactions',                    [ReactionController::class, 'storeOrUpdate'])->name('api.reactions.store');
-    Route::patch('reactions/{reaction}',         [ReactionController::class, 'update'])->name('api.reactions.update');
-    Route::delete('reactions/{reaction}',                 [ReactionController::class, 'destroy'])->name('api.reactions.destroy');
+    Route::get('expressions/{expression}',         [App\Express\ExpressionController::class, 'show'])->name('api.expressions.show');
+    Route::post('expressions',                    [App\Express\ExpressionController::class, 'storeOrUpdate'])->name('api.expressions.store');
+    Route::patch('expressions/{expression}',         [App\Express\ExpressionController::class, 'update'])->name('api.expressions.update');
+    Route::delete('expressions/{expression}',                 [App\Express\ExpressionController::class, 'destroy'])->name('api.expressions.destroy');
 });
-Route::post('reactions/stats',              [ReactionController::class, 'stats'])->name('api.reactions.stats');
+Route::post('expressions/stats',              [App\Express\ExpressionController::class, 'stats'])->name('api.expressions.stats');

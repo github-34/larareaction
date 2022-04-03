@@ -178,7 +178,7 @@ return [
         /**
          *
          */
-        //App\Providers\ReactionServiceProvider::class,
+        App\Express\Providers\ExpressionServiceProvider::class,
 
     ],
 
