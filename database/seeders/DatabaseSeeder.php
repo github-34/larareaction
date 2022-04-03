@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
         ExpressionType::create([ 'id' => 7, 'description' => '5-Star Rating',    'range_type' => 'int', 'min' => 1, 'max' => 5, 'icons' => null, 'labels' => json_encode([ 1 => '1 Star', 2=> '2 Stars', 3 => '3 Stars', 4 => '4 Stars', 5 => '5 Stars' ])]);
         ExpressionType::create([ 'id' => 8, 'description' => 'Michelin Stars',   'range_type' => 'int', 'min' => 1, 'max' => 3, 'icons' => null, 'labels' => json_encode([ 1 => '1 Michelin Star', 2=> '2 Michelin Stars', 3 => '3 Michelin Stars' ])]);
         ExpressionType::create([ 'id' => 9, 'description' => 'Vote',             'range_type' => 'int', 'min' => 1, 'max' => 3, 'icons' => null, 'labels' => json_encode([ 1 => 'in favor', 2 => 'against', 3 => 'abstain' ])]);
-
         ExpressionType::create([ 'id' => 10, 'description' => 'Elo Rating',      'range_type' => 'int', 'min' => 1, 'max' => 4000, 'labels' => json_encode(
             [ 0 => 'Novice',
                      1200 => 'Class D, Category 4',
@@ -94,13 +93,5 @@ class DatabaseSeeder extends Seeder
         Expression::create([ 'user_id' => $user2->id, 'expressable_type' => 'App\Models\Image', 'expressable_id' => $images[2]->id, 'expression_type_id' => 7, 'expression' => 3, 'created_from' => '32.2.12.23']);
         Expression::create([ 'user_id' => $user3->id, 'expressable_type' => 'App\Models\Image', 'expressable_id' => $images[2]->id, 'expression_type_id' => 7, 'expression' => 3, 'created_from' => '43.22.3.22']);
         Expression::create([ 'user_id' => $user4->id, 'expressable_type' => 'App\Models\Image', 'expressable_id' => $images[2]->id, 'expression_type_id' => 7, 'expression' => 2, 'created_from' => '43.22.3.22']);
-        // 5 users with 5 images each and an expression for each
-        // User::factory(5)
-        //     ->has(Image::factory()->
-        //         hasExpressions(1,function (array $attributes, Image $image) {
-        //             return ['user_id' => $image->user_id];
-        //         })->count(5), 'images')
-        //     ->create();
-        //User::factory()
     }
 }
