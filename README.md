@@ -24,7 +24,7 @@ A simple way of handling expressions, reactions and ratings in Laravel.
     - ELO Chess Rating
 
 ## Usage
-- Facade Calls
+- Making Expressions
 
 ```
     $expression = Express::express($image, config(express.kinds.fivestar), config(express.expression.fivestars));
@@ -41,32 +41,51 @@ A simple way of handling expressions, reactions and ratings in Laravel.
     $expression = Express::express($bill, Express::VOTE, Express::INFAVOR);
 ```
 
-- For adding Custom Type, do the following.
+- Custom Type Creation
     1. Add new Custom ExpressionType
         - Add record to ExpressionType Model via ExpressionTypes Seeder in DatabaseSeeder.php (or insert record into table)
         - Example: a custom type for expressing love
-            ExpressionType::create([ 
+        ```
+            ExpressionType::create([
                 'id' => 11, 'description' => 'Love Rating from 1 to 5',
                 'range_type' => 'int', 'min' => 1, 'max' => 5,
                 'icons' => json_encode([    1 => 'icons/smallheart.png', 3 => 'icons/bigheart.png', 5 => 'icons/hugetheart.png']),
                 'labels' => json_encode([   1 => 'love',  3 => 'luv', 5 => 'huge luv' ])]);
+        ```
 
     2. Add what models users can make custom type expressions to
         - Add records to ExpressableModel via ExpressableModelSeeder in DatabaseSeeder
         - Example: users can leave love expressions to the user and image models
+        ```
             ExpressableModel::create([ 'id' => 4, 'expressable_type' => 'App\Models\User',   'expression_type_id' => 11 ]);
             ExpressableModel::create([ 'id' => 4, 'expressable_type' => 'App\Models\Image',  'expression_type_id' => 11 ]);
+        ```
 
-    3. Add constants for each desired preset values to Xpress.php
+    3. Add constants for Facade Calls
+        - Add constants, custom type name and expression values to Xpress.php
+        ```
         const LOVERTG = 11;    // corresponds to id in expression_type_table
 
         const LOVE = 1;
         const LUV = 3;
         const HUGELUV = 5;
+        ```
 
     4. Use Facades as above
         $expression = Express::express($image, Express::LOVERTG, Express::HUGELUV);
         $expression = Express::express($user,  Express::LOVERTG, Express::LUV);
+
+- Testing
+    - Testing environment is setup for Docker (SAIL) using SQLite DB in databases/test.sqlite
+
+        ```
+        sail artisan migrate --seed --env=testing
+        sail artisan test
+        ```
+
+    - for local development, change the database absolute path in .env.testing; e.g. /home/user/src/laraexpress/databases/test.sqlite
+    php artisan migrate  --seed --env=testing
+    php artisan test
 
 ## Examples of Definition of Custom Types
 
@@ -92,8 +111,8 @@ A simple way of handling expressions, reactions and ratings in Laravel.
     - icons: [ 1 => 'freezing.png', 5 => 'hot.png' ]
 
 ## Design Choices
-- Independence from rest of Laravel Application; [complete independence???]
-    - i) no interaction with eloquent [facade call only]
+- Independence from rest of Laravel Application
+    - i) facade call only (no use of eloquent)
     - ii) Use
         - If app is part of standalone Laravel project, use one Facade call only
         - If app is microservice, use rest routes only
