@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\ReactionService;
+use App\Express\ExpressionService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,8 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('React', function ($app) {
-            return new ReactionService();
+        $this->app->bind('Express', function ($app) {
+            return new ExpressionService();
         });
     }
 

@@ -18,9 +18,4 @@ class Image extends Model
         'user_id', 'title', 'url', 'public',
     ];
 
-    public function reactions()
-    {
-        return $this->morphMany(Reaction::class, 'reactable');
-    }
-
 }

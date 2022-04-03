@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Express\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Reaction extends Model
+class Expression extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -30,7 +30,7 @@ class Reaction extends Model
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $guarded = [ ];
 
     /**
      * The attributes that should be cast to native types.
@@ -40,7 +40,7 @@ class Reaction extends Model
     protected $casts = [];
 
     /**
-     * The user who posted the reaction.
+     * The user who posted the expression.
      */
     public function user()
     {
@@ -48,11 +48,16 @@ class Reaction extends Model
     }
 
     /**
-     * The model that was reacted upon.
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
      */
-    public function reactable()
-    {
-        return $this->morphTo();
-    }
-
+    protected $hidden = [
+        'created_from',
+        'updated_from',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'deleted_from',
+    ];
 }

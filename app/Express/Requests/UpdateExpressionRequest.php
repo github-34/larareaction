@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Express\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Config;
 
-class UpdateReactionRequest extends FormRequest
+class UpdateExpressionRequest extends FormRequest
 {
 
     /**
@@ -16,7 +16,7 @@ class UpdateReactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'reaction' => ['required', 'numeric'],
+            'expression' => ['required', 'numeric'],
         ];
     }
 
@@ -28,7 +28,7 @@ class UpdateReactionRequest extends FormRequest
     public function messages()
     {
         return [
-            'reaction.numeric' => 'reaction must be numeric',
+            'expression.numeric' => 'expression must be numeric',
         ];
     }
 }
