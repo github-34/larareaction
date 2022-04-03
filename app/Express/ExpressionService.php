@@ -12,6 +12,10 @@ use App\Express\Models\ExpressionType;
 class ExpressionService
 {
 
+    public function obtainAll(): Collection
+    {
+        return Expression::all();
+    }
     public function obtain(int $id): Expression
     {
         return Expression::findOrFail($id);

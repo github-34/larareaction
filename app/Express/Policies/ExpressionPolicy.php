@@ -11,6 +11,17 @@ class ExpressionPolicy
     use HandlesAuthorization;
 
     /**
+     * Determine whether the user can view all models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewAny(?User $user)
+    {
+        return true;
+    }
+
+    /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user

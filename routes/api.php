@@ -44,9 +44,10 @@ Route::get('imageexpressioninfo', function (Request $request, ExpressionService 
     return $service->obtainExpressableInfo($images);
 });
 Route::middleware(['auth'])->group(function () {
-    Route::get('expressions/{expression}',         [App\Express\ExpressionController::class, 'show'])->name('api.expressions.show');
-    Route::post('expressions',                    [App\Express\ExpressionController::class, 'storeOrUpdate'])->name('api.expressions.store');
-    Route::patch('expressions/{expression}',         [App\Express\ExpressionController::class, 'update'])->name('api.expressions.update');
-    Route::delete('expressions/{expression}',                 [App\Express\ExpressionController::class, 'destroy'])->name('api.expressions.destroy');
+    Route::get('expressions',                 [App\Express\ExpressionController::class, 'index'])->name('api.expressions.index');
+    Route::get('expressions/{expression}',    [App\Express\ExpressionController::class, 'show'])->name('api.expressions.show');
+    Route::post('expressions',                [App\Express\ExpressionController::class, 'storeOrUpdate'])->name('api.expressions.store');
+    Route::patch('expressions/{expression}',  [App\Express\ExpressionController::class, 'update'])->name('api.expressions.update');
+    Route::delete('expressions/{expression}',               [App\Express\ExpressionController::class, 'destroy'])->name('api.expressions.destroy');
 });
 Route::post('expressions/stats',              [App\Express\ExpressionController::class, 'stats'])->name('api.expressions.stats');

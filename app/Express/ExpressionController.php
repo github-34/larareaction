@@ -38,8 +38,13 @@ class ExpressionController extends Controller
     {
         $this->service = $service;
 
-        if (App::environment() == 'local' && request()->is('api/*'))
+        if (App::environment() == 'local' && request()->route()->getPrefix() == 'api')
             Auth::login(User::find(1));
+    }
+
+    public function index()
+    {
+        return $this->successResponse(  $this->service->obtainAll(), 'Expression retrieved successfully');
     }
 
     public function show(Expression $expression)
@@ -115,15 +120,8 @@ class ExpressionController extends Controller
 
     public function successResponse($data, $message = '')
     {
-        return request()->is('api') ?
+        return (request()->route()->getPrefix() == 'api') ?
             response()->json(['status' => 'ok', 'http_code' => 200, 'data' => $data, 'message' => $message]) :
             redirect('dashboard')->with('status', 'Expression recorded!');
     }
-    // public function errorResponse($message, int $code) : JsonResponse {
-    //     return response()->json(['error' => $message, 'code' => $code ]);
-    // }
-
-    // public function errorViewResponse($code) {
-    //     return response()->view('errors.404');
-    // }
 }
