@@ -44,6 +44,8 @@ class ExpressionController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', Expression::class);
+
         return $this->successResponse(  $this->service->obtainAll(), 'Expression retrieved successfully');
     }
 
