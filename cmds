@@ -1,1 +1,0 @@
-mongoimport --db reactions --collection reactions --file /home/tar/Documents/1638590180267.json --jsonArray mongodb://localhost
