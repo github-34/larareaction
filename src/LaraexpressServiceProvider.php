@@ -13,15 +13,31 @@ class LaraexpressServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'insomnicles');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'insomnicles');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        // $this->loadRoutesFrom(__DIR__.'/routes.php');
-
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
         }
+
+        $this->publishes([
+            __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php'),
+        ]);
+        // $this->mergeConfigFrom(
+        //     __DIR__.'/../config/courier.php', 'courier'
+        // );
+
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+
+        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'insomnicles');
+        $this->publishes([
+            __DIR__.'/../resources/views' => resource_path('views/vendor/courier'),
+        ]);
+
+        // $this->publishes([
+        //     __DIR__.'/../lang' => $this->app->langPath('vendor/courier'),
+        // ]);
+
     }
 
     /**

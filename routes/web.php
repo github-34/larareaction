@@ -18,15 +18,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/dashboard', function (ExpressionService $service) {
-    return view('dashboard', [
-            'images' => $service->obtainExpressableInfo(Image::all())
-        ]);
-})->middleware(['auth'])->name('dashboard');
+// Route::get('/dashboard', function (ExpressionService $service) {
+//     return view('dashboard', [
+//             'images' => $service->obtainExpressableInfo(Image::all())
+//         ]);
+// })->middleware(['auth'])->name('dashboard');
 
 
 Route::middleware(['auth'])->group(function () {
@@ -36,4 +36,4 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('expressions/{expression}',                 [App\Express\ExpressionController::class, 'destroy'])->name('web.expressions.destroy');
 });
 
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';

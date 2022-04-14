@@ -24,25 +24,27 @@ use Illuminate\Support\Facades\Route;
 */
 
 // auth:sanctum
-Route::middleware('')->get('user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('')->get('user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::get('imageexpress', function (Request $request) {
-    Auth::login(User::find(1));
-    $image = Image::all()->first();
-    Express::express($image, Xpress::FIVESTAR, Xpress::FIVESTARS);
-    Express::express($image, Xpress::MICHELINSTAR, Xpress::TWOMICHELINSTARS);
-    Express::express($image, Xpress::EMOTIVE, Xpress::HAPPY);
+// Route::get('imageexpress', function (Request $request) {
+//     Auth::login(User::find(1));
+//     $image = Image::all()->first();
+//     Express::express($image, Xpress::FIVESTAR, Xpress::FIVESTARS);
+//     Express::express($image, Xpress::MICHELINSTAR, Xpress::TWOMICHELINSTARS);
+//     Express::express($image, Xpress::EMOTIVE, Xpress::HAPPY);
 
-    return Expression::where('expressable_id', $image->id)->where('expressable_type','App\Models\Image')->where('user_id',1)->get();
-});
+//     return Expression::where('expressable_id', $image->id)->where('expressable_type','App\Models\Image')->where('user_id',1)->get();
+// });
 
-Route::get('imageexpressioninfo', function (Request $request, ExpressionService $service) {
-    Auth::login(User::find(1));
-    $images = Image::all();
-    return $service->obtainExpressableInfo($images);
-});
+// Route::get('imageexpressioninfo', function (Request $request, ExpressionService $service) {
+//     Auth::login(User::find(1));
+//     $images = Image::all();
+//     return $service->obtainExpressableInfo($images);
+// });
+
+
 Route::middleware(['auth'])->group(function () {
     Route::get('expressions',                 [App\Express\ExpressionController::class, 'index'])->name('api.expressions.index');
     Route::get('expressions/{expression}',    [App\Express\ExpressionController::class, 'show'])->name('api.expressions.show');
