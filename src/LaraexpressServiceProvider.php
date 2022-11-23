@@ -19,24 +19,16 @@ class LaraexpressServiceProvider extends ServiceProvider
         }
 
         $this->publishes([
-            __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php'),
+            __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php')
         ]);
-        // $this->mergeConfigFrom(
-        //     __DIR__.'/../config/courier.php', 'courier'
-        // );
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'insomnicles');
-        $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/courier'),
-        ]);
-
-        // $this->publishes([
-        //     __DIR__.'/../lang' => $this->app->langPath('vendor/courier'),
-        // ]);
+        // $this->publishes([ __DIR__.'/../resources/views' => resource_path('views/vendor/courier') ]);
+        // $this->publishes([ __DIR__.'/../lang' => $this->app->langPath('vendor/courier') ]);
 
     }
 
@@ -51,8 +43,13 @@ class LaraexpressServiceProvider extends ServiceProvider
 
         // Register the service the package provides.
         $this->app->singleton('laraexpress', function ($app) {
-            return new Laraexpress;
+            return new ExpressionService();
         });
+
+
+        // $this->app->bind('calculator', function($app) {
+        //     return new Calculator();
+        // });
     }
 
     /**
@@ -73,9 +70,9 @@ class LaraexpressServiceProvider extends ServiceProvider
     protected function bootForConsole(): void
     {
         // Publishing the configuration file.
-        $this->publishes([
-            __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php'),
-        ], 'laraexpress.config');
+        // $this->publishes([
+        //     __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php'),
+        // ], 'laraexpress.config');
 
         // Publishing the views.
         /*$this->publishes([
