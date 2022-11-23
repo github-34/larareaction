@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Express\Requests;
+namespace Insomnicles\Laraexpress\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Config;

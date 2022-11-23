@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Express;
+namespace Insomnicles\Laraexpress;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
@@ -9,13 +9,13 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 
-use App\Express\ExpressionService;
-use App\Express\Requests\StoreExpressionRequest;
-use App\Express\Requests\UpdateExpressionRequest;
-use App\Express\Requests\ShowExpressionStatsRequest;
-use App\Express\Models\ExpressableModel;
-use App\Express\Models\Expression;
-use App\Express\Models\ExpressionType;
+use Insomnicles\Laraexpress\ExpressionService;
+use Insomnicles\Laraexpress\Requests\StoreExpressionRequest;
+use Insomnicles\Laraexpress\Requests\UpdateExpressionRequest;
+use Insomnicles\Laraexpress\Requests\ShowExpressionStatsRequest;
+use Insomnicles\Laraexpress\ExpressableModel;
+use Insomnicles\Laraexpress\Expression;
+use Insomnicles\Laraexpress\ExpressionType;
 
 /**
  * Expression Controller

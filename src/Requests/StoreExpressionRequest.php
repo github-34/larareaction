@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Express\Requests;
+namespace Insomnicles\Laraexpress\Requests;
 
-use App\Express\Models\ExpressableModel;
-use App\Express\Models\ExpressionType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Config;
+
+use Insomnicles\Laraexpress\ExpressableModel;
+use Insomnicles\Laraexpress\ExpressionType;
 
 class StoreExpressionRequest extends FormRequest
 {

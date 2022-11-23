@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Express\Requests;
+namespace Insomnicles\Laraexpress\Requests;
 
-use App\Express\Models\ExpressableModel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Config;
+
+use Insomnicles\Laraexpress\ExpressableModel;
 
 class ShowExpressionStatsRequest extends FormRequest
 {

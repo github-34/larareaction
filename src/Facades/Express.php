@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Express\Facades;
+namespace Insomnicles\Laraexpress\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Express\Models;
+namespace Insomnicles\Laraexpress;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Express\Policies;
+namespace Insomnicles\Laraexpress\Policies;
 
 use App\Express\Models\Expression;
 use App\Models\User;

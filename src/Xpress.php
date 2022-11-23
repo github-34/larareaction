@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Express;
+namespace Insomnicles\Laraexpress;
 
 class Xpress {
 

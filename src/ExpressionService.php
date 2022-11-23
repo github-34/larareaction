@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Express;
+namespace Insomnicles\Laraexpress;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
-use App\Express\Models\ExpressableModel;
-use App\Express\Models\Expression;
-use App\Express\Models\ExpressionType;
+use Insomnicles\Laraexpress\ExpressableModel;
+use Insomnicles\Laraexpress\Expression;
+use Insomnicles\Laraexpress\ExpressionType;
 
 class ExpressionService
 {
