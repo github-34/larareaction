@@ -18,17 +18,25 @@ class LaraexpressServiceProvider extends ServiceProvider
             $this->bootForConsole();
         }
 
+        // config
         $this->publishes([
             __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php')
         ]);
+        //$this->mergeConfigFrom(__DIR__.'/../config/laraexpress.php', 'laraexpress');
 
+        //database
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        // routes
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
+        // front end: language translations
+        // $this->publishes([ __DIR__.'/../lang' => $this->app->langPath('vendor/courier') ]);
+
+        // front end: views
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'insomnicles');
         // $this->publishes([ __DIR__.'/../resources/views' => resource_path('views/vendor/courier') ]);
-        // $this->publishes([ __DIR__.'/../lang' => $this->app->langPath('vendor/courier') ]);
 
     }
 
@@ -39,13 +47,11 @@ class LaraexpressServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/laraexpress.php', 'laraexpress');
 
         // Register the service the package provides.
         $this->app->singleton('laraexpress', function ($app) {
             return new ExpressionService();
         });
-
 
         // $this->app->bind('calculator', function($app) {
         //     return new Calculator();
