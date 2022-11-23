@@ -24,7 +24,7 @@ class LaraexpressServiceProvider extends ServiceProvider
 
         //database
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->publishes([ __DIR__.'/../database/seeders/LaraexpressSeeder.php' => database_path('seeders/LaraexpressSeeder') ], 'laraexpress');
+        $this->publishes([ __DIR__.'/../database/seeders/LaraexpressSeeder.php' => database_path('seeders/LaraexpressSeeder.php') ], 'laraexpress');
 
         // routes
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
