@@ -19,15 +19,12 @@ class LaraexpressServiceProvider extends ServiceProvider
         }
 
         // config
-        $this->publishes([
-            __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php')
-        ]);
+        $this->publishes([ __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php', 'laraexpress')]);
         //$this->mergeConfigFrom(__DIR__.'/../config/laraexpress.php', 'laraexpress');
 
         //database
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->publishes([ __DIR__.'/../database/seeders' => database_path('seeders') ], 'laraexpress seeds');
-//        $this->publishes([ __DIR__ . '/../database/seeders/LaraexpressSeeder.php' => database_path('seeders/LaraexpressSeeder.php'), ], 'laraexpress-seeds');
+        $this->publishes([ __DIR__.'/../database/seeders/LaraexpressSeeder.php' => database_path('seeders/LaraexpressSeeder') ], 'laraexpress');
 
         // routes
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
