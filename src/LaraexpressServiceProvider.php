@@ -30,13 +30,26 @@ class LaraexpressServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
-        // front end: language translations
+        // Publish Translation Files
         // $this->publishes([ __DIR__.'/../lang' => $this->app->langPath('vendor/courier') ]);
+        /*$this->publishes([
+            __DIR__.'/../resources/lang' => resource_path('lang/vendor/insomnicles'),
+        ], 'laraexpress.views');*/
 
-        // front end: views
+        // Publish views
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'insomnicles');
         // $this->publishes([ __DIR__.'/../resources/views' => resource_path('views/vendor/courier') ]);
+        /*$this->publishes([
+            __DIR__.'/../resources/views' => base_path('resources/views/vendor/insomnicles'),
+        ], 'laraexpress.views');*/
 
+        // Publishing assets.
+        /*$this->publishes([
+            __DIR__.'/../resources/assets' => public_path('vendor/insomnicles'),
+        ], 'laraexpress.views');*/
+
+        // Registering package commands.
+        // $this->commands([]);
     }
 
     /**
@@ -47,12 +60,8 @@ class LaraexpressServiceProvider extends ServiceProvider
     public function register(): void
     {
 
-        // Register the service the package provides.
-        //$this->app->singleton('laraexpress', function ($app) {
-        //    return new ExpressionService();
-        //});
-
-	$this->app->bind('Express', function ($app) {
+        // For Facade
+        $this->app->bind('Express', function ($app) {
             return new ExpressionService();
         });
     }
@@ -74,27 +83,6 @@ class LaraexpressServiceProvider extends ServiceProvider
      */
     protected function bootForConsole(): void
     {
-        // Publishing the configuration file.
-        // $this->publishes([
-        //     __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php'),
-        // ], 'laraexpress.config');
 
-        // Publishing the views.
-        /*$this->publishes([
-            __DIR__.'/../resources/views' => base_path('resources/views/vendor/insomnicles'),
-        ], 'laraexpress.views');*/
-
-        // Publishing assets.
-        /*$this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/insomnicles'),
-        ], 'laraexpress.views');*/
-
-        // Publishing the translation files.
-        /*$this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/insomnicles'),
-        ], 'laraexpress.views');*/
-
-        // Registering package commands.
-        // $this->commands([]);
     }
 }

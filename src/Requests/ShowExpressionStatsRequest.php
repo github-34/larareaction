@@ -10,6 +10,13 @@ use Insomnicles\Laraexpress\ExpressableModel;
 class ShowExpressionStatsRequest extends FormRequest
 {
     /**
+     * Indicates if the validator should stop on the first rule failure.
+     *
+     * @var bool
+     */
+    protected $stopOnFirstFailure = true;
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -17,9 +24,9 @@ class ShowExpressionStatsRequest extends FormRequest
     public function rules()
     {
         return [
-            'expressable_type' => ['required', 'string'],
-            'expressable_id'  => ['required', 'integer'],
-            'expression_type_id'  => ['required', 'integer'],
+            'expressable_type'      => ['required', 'string'],
+            'expression_type_id'    => ['required', 'integer'],
+            'expressable_id'        => ['required', 'integer'],
         ];
     }
 
@@ -32,11 +39,11 @@ class ShowExpressionStatsRequest extends FormRequest
     {
         return [
             'expressable_type.required' => 'expressable_type is required',
-            'expressable_type.string' => 'expressable_type must be a string',
-            'expressable_id.required' => 'expressable_id is required',
-            'expressable_id.integer' => 'expressable_id must be an integer',
+            'expressable_type.string'   => 'expressable_type must be a string',
             'expression_type_id.required' => 'expression_type_id is required',
-            'expression_type_id.integer' => 'expression_type_id must be an integer',
+            'expression_type_id.integer'=> 'expression_type_id must be an integer',
+            'expressable_id.required'   => 'expressable_id is required',
+            'expressable_id.integer'    => 'expressable_id must be an integer',
         ];
     }
 
@@ -52,32 +59,28 @@ class ShowExpressionStatsRequest extends FormRequest
             $data = $validator->getData();
             $bag = $validator->getMessageBag();
 
-            if (array_key_exists('expressable_type', $data)) {
+            if (!array_key_exists('expressable_type', $data) || !array_key_exists('expressable_id', $data) || !array_key_exists('expression_type_id', $data))
+                return;
 
-                // Is the model (expressable_type) one that users can express to?
-                //      E.g. Valid Expressable: App\Models\Images
-                //      E.g. Invalid Expressable: App\Models\BalanceSheet: model not designed to have expressions
+            if (!class_exists($data['expressable_type'])) {
+                $validator->errors()->add('Invalid Parameter', 'Expressable model class not found: '.$data['expressable_type']);
+                return;
+            }
 
-                $expressableModel = ExpressableModel::where('expressable_type', $data['expressable_type'])->first();
+            // Check: Authorization: is the model (expressable_type) one that users are authorized to express to?
+            $expressableModel = ExpressableModel::where('expressable_type', $data['expressable_type'])->where('expression_type_id', $data['expression_type_id'])->first();
+            if (is_null($expressableModel)) {
+                $validator->errors()->add('Invalid Parameter', 'Expressable model not found: incorrect expressable_type or expression_type_id');
+                return;
+            }
 
-                if (is_null($expressableModel)) {
-                    $validator->errors()->add('expressable_type', 'Invalid expressable type');
-                    return;
-                }
-
-                // Does the expressable_id (of expression_type) exists?
-                //      E.g. Invalid input:
-                //      E.g. Valid input:
-                // Note: If microservice, no validation here; see design comments in config
-                // expressable model exists: check whether expressable id exists in database
-                if (array_key_exists('expressable_id', $data) && !Config::get('microservice')) {
-                    $expressableObject = $data['expressable_type']::where('id', $data['expressable_id'])->first();
-
-                    if (is_null($expressableObject)) {
-                        $validator->errors()->add('expressable_id', 'Invalid expressable_id');
-                        return;
-                    }
-                }
+            // Check: there is an expressable_id (of expression_type) in DB
+            // TODO: If microservice, skip validation; see design comments in README
+            //if (!Config::get('microservice')) {
+            $expressableObject = $data['expressable_type']::where('id', $data['expressable_id'])->first();
+            if (is_null($expressableObject)) {
+                $validator->errors()->add('Invalid Parameter', 'Expressable object not found: incorrect expressable_type or expressable_id');
+                return;
             }
         });
     }
