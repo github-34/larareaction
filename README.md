@@ -38,10 +38,17 @@ Source code for packagist.
 
 ```
     composer require insomnicles/laraexpress
-'''
+```
 
 ## Usage
-- creating expressions for pre-defined expression types use Facade: Express::express($object, $type_id, $expression)
+- Define which models can have expressions. For example, to make Image models expressable with a five star rating and an emotive expression add the following to a DB seeder:
+
+```
+    ExpressableModel::create([ 'expressable_type' => 'App\Models\Image', 'expression_type_id' => Xpress::FIVESTAR ]);
+    ExpressableModel::create([ 'expressable_type' => 'App\Models\Image', 'expression_type_id' => Xpress::EMOTIVE ]);
+
+```
+- creating expressions/rating using Facade: Express::express($object, $type_id, $expression)
 
 ```
     $expr = Express::express($image, Xpress::FIVESTAR, Express::TWOSTARS);
@@ -60,7 +67,7 @@ Source code for packagist.
 
 - retrieving expression values and stats for a specific model
 
-## SETUP
+## Creating Custom Types
 - To create a Custom Expression Type, do the following:
     1. Add new Custom ExpressionType
         - Add record to ExpressionType Model via ExpressionTypes Seeder in DatabaseSeeder.php (or insert record into table)
