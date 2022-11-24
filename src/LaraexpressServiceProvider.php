@@ -19,12 +19,12 @@ class LaraexpressServiceProvider extends ServiceProvider
         }
 
         // config
-        $this->publishes([ __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php', 'laraexpress')]);
+        $this->publishes([ __DIR__.'/../config/laraexpress.php' => config_path('laraexpress.php')]);
         //$this->mergeConfigFrom(__DIR__.'/../config/laraexpress.php', 'laraexpress');
 
         //database
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->publishes([ __DIR__.'/../database/seeders/LaraexpressSeeder.php' => database_path('seeders/LaraexpressSeeder.php') ], 'laraexpress');
+        $this->publishes([ __DIR__.'/../database/seeders/LaraexpressSeeder.php' => database_path('seeders/LaraexpressSeeder.php') ]);
 
         // routes
         $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
@@ -48,13 +48,13 @@ class LaraexpressServiceProvider extends ServiceProvider
     {
 
         // Register the service the package provides.
-        $this->app->singleton('laraexpress', function ($app) {
+        //$this->app->singleton('laraexpress', function ($app) {
+        //    return new ExpressionService();
+        //});
+
+	$this->app->bind('Express', function ($app) {
             return new ExpressionService();
         });
-
-        // $this->app->bind('calculator', function($app) {
-        //     return new Calculator();
-        // });
     }
 
     /**
