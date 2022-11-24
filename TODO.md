@@ -8,6 +8,8 @@
 - updaterequestform 
 - validation in service->express()
 - TESTing
+    - Orechtrabench
+    - Image migrations?
     - in docker (sail) environment:
         ```
         sail artisan migrate --seed --env=testing
@@ -19,20 +21,15 @@
         php artisan test
         ```
 ## Features: Implementation
-- Eloquent Optionally; use eloquent between the expression, expression type models
-- Service Provider
-- Facades for Getting User expressions, ModelId expressions, ModelId expression Stats [need Service Provider First]
+- Eloquent Optionally?
 - Mongo Compatibility
 - Caching
 - Optimization (Basic):
     - database indexes
     - STATS: don't check that the expressable exists & expressable-expressable_id exists every time stats is requested 
-        [implement caching first???]
-- Testing:
-    - testing environment: separate db service in docker for testing;
-    - remove ids from seeders; user factories
+- Performance Testing:
     - large datasets & times
-- Exception handling Independent of Handler
+- Exception handling improvement: Custom Independent of Handler
 - API Documentation: routes, return codes, exceptions
 - Observers for Analytics
 - Backward Compatibility for Laravel 7, 6, etc.
@@ -52,7 +49,6 @@
 		- Mary expresses to photo:  expression_id: user_id=4, expressable_type="app\model\photo" expressable_id=3
 
 - Guest expressions
-
 - API Authentication: token, jwt
 - expressions can be stored for different applications (for microservices)
 - Admins can, in UI, create apps, api tokens, custom expression types, do deletes, force deletes
