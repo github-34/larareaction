@@ -2,16 +2,14 @@
 
 A simple way of handling expressions, reactions and ratings in Laravel.
 
-Source code for packagist.
-
 ## Features
 - Terminology
-    * *ExpressionType*: a type of expression, reaction or rating (e.g. 1 to 5 stars, Like/Dislike,  )
-    * *ExpressableModel*: a laravel model that *can* have expressions
-    * *Expressable Id*: id for the ExpressableModel
-    * *Expression*: expression value
+    * *ExpressionType*: a type of expression, reaction or rating (e.g. 1 to 5 stars, Like/Dislike)
+    * *ExpressableModel*: a laravel model kind that *can* have expressions (e.g. 'App\Models\Image')
+    * *Expressable Id*: id of a specific model of kind ExpressableModel (e.g. id=4)
+    * *Expression*: expression value (e.g. 3 stars)
 
-- Expressions
+- Expression Features
     * Several build-in Expression types with discrete or gradient ranges
     * Custom expressions can be added
     * Expressable models (models that *can* have expressions) must be predefined in DB
@@ -19,8 +17,7 @@ Source code for packagist.
         - E.g. Image model can have two expression types: like/dislike AND 5-star rating)
     * One user expression per expressable model-expression type pair
     * Only authenticated users can store expressions
-    * Users can only update or delete their own expressions
-    * Users can only have expressions to predefined set of expressable models
+    * Users are authorized to only update or delete their own expressions
 
 - Pre-defined Expression Types
     * Applause
@@ -37,85 +34,71 @@ Source code for packagist.
 ## Installation
 
 ```
-    composer require insomnicles/laraexpress
+composer require insomnicles/laraexpress
 ```
 
 ## Usage
-- Define which models can have expressions. For example, to make Image models expressable with a five star rating and an emotive expression add the following to a DB seeder:
+- To define which models can have expressions of what expression type, add the following to a DB seeder:
 
 ```
-    ExpressableModel::create([ 'expressable_type' => 'App\Models\Image', 'expression_type_id' => Xpress::FIVESTAR ]);
-    ExpressableModel::create([ 'expressable_type' => 'App\Models\Image', 'expression_type_id' => Xpress::EMOTIVE ]);
+ExpressableModel::create([ 'expressable_type' => 'App\Models\Image', 'expression_type_id' => Xpress::FIVESTAR ]);
+ExpressableModel::create([ 'expressable_type' => 'App\Models\Image', 'expression_type_id' => Xpress::EMOTIVE ]);
+```
+- To create expressions/ratings, use the Express::express Facade:
+    * Express::express($object, $type_id, $expression)
 
 ```
-- creating expressions/rating using Facade: Express::express($object, $type_id, $expression)
-
-```
-    $expr = Express::express($image, Xpress::FIVESTAR, Express::TWOSTARS);
-    $expr = Express::express($product, Xpress::FIVESTAR, Express::FIVESTARS);
-    $expr = Express::express($restaurant, Xpress::MICHELINSTAR, Express::ONEMICHELINSTARS);
-    $expr = Express::express($image, Xpress::LIKEDISLIKE, Express::LIKE);
-    $expr = Express::express($image, Xpress::HOTCOLDGRADIENT, 2.563);
-    $expr = Express::express($image, Xpress::EMOTIVE, Express::HAPPY);
-    $expr = Express::express($image, Xpress::EMOTIVE, Express::MAD);
-    $expr = Express::express($image, Xpress::COGNITIVE, Express::CONFUSING);
-    $expr = Express::express($image, Xpress::COGNITIVE, Express::INTERESTING);
-    $expr = Express::express($chessPlayer, Xpress::ELO, Express::GRANDMASTER);
-    $expr = Express::express($chessPlayer, Xpress::ELO, 2832);
-    $expr = Express::express($bill, Xpress::VOTE, Express::INFAVOR);
+$expr = Express::express($image, Xpress::FIVESTAR, Express::TWOSTARS);
+$expr = Express::express($product, Xpress::FIVESTAR, Express::FIVESTARS);
+$expr = Express::express($restaurant, Xpress::MICHELINSTAR, Express::ONEMICHELINSTARS);
+$expr = Express::express($image, Xpress::LIKEDISLIKE, Express::LIKE);
+$expr = Express::express($image, Xpress::HOTCOLDGRADIENT, 2.563);
+$expr = Express::express($image, Xpress::EMOTIVE, Express::HAPPY);
+$expr = Express::express($image, Xpress::EMOTIVE, Express::MAD);
+$expr = Express::express($image, Xpress::COGNITIVE, Express::CONFUSING);
+$expr = Express::express($image, Xpress::COGNITIVE, Express::INTERESTING);
+$expr = Express::express($chessPlayer, Xpress::ELO, Express::GRANDMASTER);
+$expr = Express::express($chessPlayer, Xpress::ELO, 2832);
+$expr = Express::express($bill, Xpress::VOTE, Express::INFAVOR);
 ```
 
-- retrieving expression values and stats for a specific model
+- To retrieve expression values and stats, use the Express::stats Facade:
+    * Express::stats(String $expressable_type, int $expressable_id, int $expression_type_id)
+
+```
+$objectStats = Express::stats(5, 1, 6);
+```
 
 ## Creating Custom Types
-- To create a Custom Expression Type, do the following:
+- To create a Custom Expression Type, do the following
     1. Add new Custom ExpressionType
         - Add record to ExpressionType Model via ExpressionTypes Seeder in DatabaseSeeder.php (or insert record into table)
         - Example: a custom type for expressing love
         ```
-            ExpressionType::create([
-                'id' => 11, 'description' => 'Love Rating from 1 to 5',
-                'range_type' => 'int', 'min' => 1, 'max' => 5,
-                'icons' => json_encode([    1 => 'icons/smallheart.png', 3 => 'icons/heart.png', 5 => 'icons/bigheart.png']),
-                'labels' => json_encode([   1 => 'little love',  3 => 'love', 5 => 'looove' ])]);
+        ExpressionType::create([
+            'id' => 11, 'description' => 'Love Rating from 1 to 5',
+            'range_type' => 'int', 'min' => 1, 'max' => 5,
+            'icons' => json_encode([    1 => 'icons/smallheart.png', 3 => 'icons/heart.png', 5 => 'icons/bigheart.png']),
+            'labels' => json_encode([   1 => 'little love',  3 => 'love', 5 => 'looove' ])]);
         ```
-
     2. Add what models users can make custom type expressions to
         - Add records to ExpressableModel via ExpressableModelSeeder in DatabaseSeeder
         - Example: users can leave love expressions to the user and image models
         ```
-            ExpressableModel::create([ 'id' => 4, 'expressable_type' => 'App\Models\User',   'expression_type_id' => 11 ]);
-            ExpressableModel::create([ 'id' => 4, 'expressable_type' => 'App\Models\Image',  'expression_type_id' => 11 ]);
+        ExpressableModel::create([ 'id' => 4, 'expressable_type' => 'App\Models\User',   'expression_type_id' => 11 ]);
+        ExpressableModel::create([ 'id' => 4, 'expressable_type' => 'App\Models\Image',  'expression_type_id' => 11 ]);
         ```
-
     3. Add constants for Facade Calls
         - Add constants, custom type name and expression values to Xpress.php
         ```
         const LOVERTG = 11;    // corresponds to id in expression_type_table
-
         const LTLLOVE = 1;
         const LOVE = 3;
         const LOOOVE = 5;
         ```
-
     4. Use Facades as above
         $expression = Express::express($image, Express::LOVERTG, Express::HUGELUV);
         $expression = Express::express($user,  Express::LOVERTG, Express::LUV);
-
-- Testing
-    - Testing environment is setup for Docker (SAIL) using SQLite DB in databases/test.sqlite
-
-        ```
-        sail artisan migrate --seed --env=testing
-        sail artisan test
-        ```
-
-    - for local development, change the database absolute path in .env.testing; e.g. /home/user/src/laraexpress/databases/test.sqlite
-
-        ```
-        php artisan migrate  --seed --env=testing
-        php artisan test
-        ```
 
 ## Examples of Definition of Pre-defined Expression Types
 
@@ -148,12 +131,11 @@ Source code for packagist.
         - If app is microservice, use rest routes only
     - PRO:
         - adding, removing, updating expressions is simpler in basic crud cases
-        - updates / changes to expression versions can't affect rest of app
+        - updates to expression versions can't affect rest of app
         - can create independent expressions microservice in architectures with different languages and frameworks
-        - Integration with Relational or NoSQL Databases simple
-        - Use of NoSQL DBS is simple; no changes to Facade
+        - integration with relational or noSQL databases is simpler: no changes to facade
     - CON: can't integrate with eloquent models and queries
-        - makes existing complex Eloquent queries in app a two/three-step process
+        - makes querying expressions more cumbersome (two/three-step process) and potentially slower
 
 ## License
 

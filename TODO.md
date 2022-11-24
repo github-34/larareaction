@@ -1,4 +1,5 @@
 ## TODO
+- fE views
 - service->obtaininfo shouldn't presuppose all objects of same model 
 - add class (primary color, secondary) to five star
 - // $table->unique([ 'user_id', 'expressable', 'expressable_id' ]);
@@ -6,6 +7,17 @@
 - test icons/validate url path
 - updaterequestform 
 - validation in service->express()
+- TESTing
+    - in docker (sail) environment:
+        ```
+        sail artisan migrate --seed --env=testing
+        sail artisan test
+        ```
+    - in local development evironment:
+        ```
+        php artisan migrate  --seed --env=testing
+        php artisan test
+        ```
 ## Features: Implementation
 - Eloquent Optionally; use eloquent between the expression, expression type models
 - Service Provider
