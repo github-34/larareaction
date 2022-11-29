@@ -41,8 +41,13 @@ composer require insomnicles/laraexpress
 - To define which models can have expressions of what expression type, add the following to a DB seeder:
 
 ```
-ExpressableModel::create([ 'expressable_type' => 'App\Models\Image', 'expression_type_id' => Xpress::FIVESTAR ]);
-ExpressableModel::create([ 'expressable_type' => 'App\Models\Image', 'expression_type_id' => Xpress::EMOTIVE ]);
+ExpressableModel::create([ 
+	'expressable_type' => 'App\Models\Image',
+	'expression_type_id' => Xpress::FIVESTAR ]);
+
+ExpressableModel::create([
+	'expressable_type' => 'App\Models\Image',
+	'expression_type_id' => Xpress::EMOTIVE ]);
 ```
 - To create expressions/ratings, use the Express::express Facade:
     * Express::express($object, $type_id, $expression)
