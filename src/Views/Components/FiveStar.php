@@ -45,11 +45,11 @@ class FiveStar extends Component
         $countString = $expressionCount;
 
         if ($expressionCount > 999 && $expressionCount < 1000000) {
-            $countString = floor($expressionCount / 1000)."k+";
+            $countString = floor($expressionCount / 1000).'k+';
         }
 
         if ($expressionCount > 1000000 && $expressionCount < 100000000) {
-            $countString = floor($expressionCount / 1000000)."M+";
+            $countString = floor($expressionCount / 1000000).'M+';
         }
 
         return (string) $countString;

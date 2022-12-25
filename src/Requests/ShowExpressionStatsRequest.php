@@ -4,7 +4,6 @@ namespace Insomnicles\Laraexpress\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Config;
-
 use Insomnicles\Laraexpress\ExpressableModel;
 
 class ShowExpressionStatsRequest extends FormRequest
@@ -51,7 +50,7 @@ class ShowExpressionStatsRequest extends FormRequest
      * Configure the validator instance.
      *
      * @param \Illuminate\Validation\Validator $validator
-     * 
+     *
      * @return void
      */
     public function withValidator($validator)
@@ -66,6 +65,7 @@ class ShowExpressionStatsRequest extends FormRequest
 
             if (!class_exists($data['expressable_type'])) {
                 $validator->errors()->add('Invalid Parameter', 'Expressable model class not found: '.$data['expressable_type']);
+
                 return;
             }
 
@@ -73,6 +73,7 @@ class ShowExpressionStatsRequest extends FormRequest
             $expressableModel = ExpressableModel::where('expressable_type', $data['expressable_type'])->where('expression_type_id', $data['expression_type_id'])->first();
             if (is_null($expressableModel)) {
                 $validator->errors()->add('Invalid Parameter', 'Expressable model not found: incorrect expressable_type or expression_type_id');
+
                 return;
             }
 
@@ -82,6 +83,7 @@ class ShowExpressionStatsRequest extends FormRequest
             $expressableObject = $data['expressable_type']::where('id', $data['expressable_id'])->first();
             if (is_null($expressableObject)) {
                 $validator->errors()->add('Invalid Parameter', 'Expressable object not found: incorrect expressable_type or expressable_id');
+
                 return;
             }
         });

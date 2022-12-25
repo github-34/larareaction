@@ -4,16 +4,12 @@ namespace Insomnicles\Laraexpress;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Insomnicles\Laraexpress\ExpressionService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Insomnicles\Laraexpress\Requests\ShowExpressionStatsRequest;
 use Insomnicles\Laraexpress\Requests\StoreExpressionRequest;
 use Insomnicles\Laraexpress\Requests\UpdateExpressionRequest;
-use Insomnicles\Laraexpress\Requests\ShowExpressionStatsRequest;
-use Insomnicles\Laraexpress\ExpressableModel;
-use Insomnicles\Laraexpress\Expression;
-use Insomnicles\Laraexpress\ExpressionType;
 
 /**
  * Expression Controller.
@@ -25,6 +21,7 @@ use Insomnicles\Laraexpress\ExpressionType;
  *      4. assemble and return api response (always)
  *
  * @version 0.1
+ *
  * @todo
  */
 class ExpressionController extends Controller
@@ -35,8 +32,9 @@ class ExpressionController extends Controller
     {
         $this->service = $service;
 
-        if (App::environment() == 'local' && request()->route()->getPrefix() == 'api')
+        if (App::environment() == 'local' && request()->route()->getPrefix() == 'api') {
             Auth::login(User::find(1));
+        }
     }
 
     public function index()
@@ -52,7 +50,7 @@ class ExpressionController extends Controller
 
         return $this->successResponse(
             [
-                'expression' => $expression 
+                'expression' => $expression,
             ],
             'Expression retrieved successfully'
         );
@@ -84,10 +82,12 @@ class ExpressionController extends Controller
         // Validate expression is in min-max range as defined in its expression type
         $expressableModel = ExpressableModel::where('expressable_type', $expression->expressable_type)->first();
         $expressionType = ExpressionType::where('id', '=', $expressableModel->expression_type_id)->first();
-        if ($validated['expression'] < $expressionType->min)
-            throw ValidationException::withMessages(['expression' => ["expression cannot be less than " . $expressionType->min]]);
-        if ($validated['expression'] > $expressionType->max)
-            throw ValidationException::withMessages(['expression' => ["expression cannot be greater than " . $expressionType->max]]);
+        if ($validated['expression'] < $expressionType->min) {
+            throw ValidationException::withMessages(['expression' => ['expression cannot be less than '.$expressionType->min]]);
+        }
+        if ($validated['expression'] > $expressionType->max) {
+            throw ValidationException::withMessages(['expression' => ['expression cannot be greater than '.$expressionType->max]]);
+        }
 
         $expression = $this->service->update($expression, $validated);
 

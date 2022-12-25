@@ -14,7 +14,7 @@ class ExpressionPolicy
      * Determine whether the user can view all models.
      *
      * @param \App\Models\User $user
-     * 
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(?User $user)
@@ -25,9 +25,9 @@ class ExpressionPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param \App\Models\User $user
+     * @param \App\Models\User       $user
      * @param \App\Models\Expression $expression
-     * 
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user, Expression $expression)
@@ -39,7 +39,7 @@ class ExpressionPolicy
      * Determine whether the user can create models.
      *
      * @param \App\Models\User $user
-     * 
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
@@ -50,9 +50,9 @@ class ExpressionPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param \App\Models\User $user
-     * @param \App\Models\Expression  $expression
-     * 
+     * @param \App\Models\User       $user
+     * @param \App\Models\Expression $expression
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Expression $expression)
@@ -63,9 +63,9 @@ class ExpressionPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param \App\Models\User  $user
-     * @param \App\Models\Expression  $expression
-     * 
+     * @param \App\Models\User       $user
+     * @param \App\Models\Expression $expression
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Expression $expression)
@@ -74,10 +74,10 @@ class ExpressionPolicy
     }
 
     /**
-     * Determine whether the user can view any expressable expression
+     * Determine whether the user can view any expressable expression.
      *
      * @param \App\Models\User|null $user
-     * 
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewStats(?User $user)
