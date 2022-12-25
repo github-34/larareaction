@@ -2,8 +2,8 @@
 
 namespace Insomnicles\Laraexpress;
 
-class Xpress {
-
+class Xpress
+{
     // Expression Types
     const APPLAUSE = 1;
     const LIKEDISLIKE = 2;
@@ -69,5 +69,3 @@ class Xpress {
     const GRANDMASTER = 2400;
     const SUPERGRANDMASTER = 2700;
 }
-
-?>
