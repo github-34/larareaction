@@ -38,19 +38,20 @@ class ShowExpressionStatsRequest extends FormRequest
     public function messages()
     {
         return [
-            'expressable_type.required' => 'expressable_type is required',
-            'expressable_type.string'   => 'expressable_type must be a string',
-            'expression_type_id.required' => 'expression_type_id is required',
-            'expression_type_id.integer'=> 'expression_type_id must be an integer',
-            'expressable_id.required'   => 'expressable_id is required',
-            'expressable_id.integer'    => 'expressable_id must be an integer',
+            'expressable_type.required'     => 'expressable_type is required',
+            'expressable_type.string'       => 'expressable_type must be a string',
+            'expression_type_id.required'   => 'expression_type_id is required',
+            'expression_type_id.integer'    => 'expression_type_id must be an integer',
+            'expressable_id.required'       => 'expressable_id is required',
+            'expressable_id.integer'        => 'expressable_id must be an integer',
         ];
     }
 
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
+     * @param \Illuminate\Validation\Validator $validator
+     * 
      * @return void
      */
     public function withValidator($validator)
@@ -59,8 +60,9 @@ class ShowExpressionStatsRequest extends FormRequest
             $data = $validator->getData();
             $bag = $validator->getMessageBag();
 
-            if (!array_key_exists('expressable_type', $data) || !array_key_exists('expressable_id', $data) || !array_key_exists('expression_type_id', $data))
+            if (!array_key_exists('expressable_type', $data) || !array_key_exists('expressable_id', $data) || !array_key_exists('expression_type_id', $data)) {
                 return;
+            }
 
             if (!class_exists($data['expressable_type'])) {
                 $validator->errors()->add('Invalid Parameter', 'Expressable model class not found: '.$data['expressable_type']);

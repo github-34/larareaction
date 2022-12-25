@@ -16,7 +16,7 @@ class CreateExpressionTypesTable extends Migration
         Schema::create('expression_types', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->enum( 'range_type',['int', 'float']);
+            $table->enum('range_type',['int', 'float']);
             $table->integer('min');
             $table->integer('max');
             $table->json('icons')->nullable();      // [ x => 'url/path' ], x is integer that corresponds to value in range
