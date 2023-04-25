@@ -4,7 +4,6 @@ namespace Insomnicles\Laraexpress\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Config;
-
 use Insomnicles\Laraexpress\ExpressableModel;
 use Insomnicles\Laraexpress\ExpressionType;
 
@@ -40,21 +39,22 @@ class StoreExpressionRequest extends FormRequest
     public function messages()
     {
         return [
-            'expressable_type.required' => 'expressable_type is required',
-            'expressable_type.string'   => 'expressable_type must be a string',
-            'expressable_id.required'   => 'expressable_id is required',
-            'expressable_id.integer'    => 'expressable_id must be an integer',
+            'expressable_type.required'  => 'expressable_type is required',
+            'expressable_type.string'    => 'expressable_type must be a string',
+            'expressable_id.required'    => 'expressable_id is required',
+            'expressable_id.integer'     => 'expressable_id must be an integer',
             'expression_type_id.required'=> 'expression_type_id is required',
-            'expression_type_id.integer'=> 'expression_type_id must be an integer',
-            'expression.required'       => 'expression is required',
-            'expression.numeric'        => 'expression must be numeric',
+            'expression_type_id.integer' => 'expression_type_id must be an integer',
+            'expression.required'        => 'expression is required',
+            'expression.numeric'         => 'expression must be numeric',
         ];
     }
 
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
+     * @param \Illuminate\Validation\Validator $validator
+     *
      * @return void
      */
     public function withValidator($validator)
@@ -64,11 +64,13 @@ class StoreExpressionRequest extends FormRequest
                 $data = $validator->getData();
                 $bag = $validator->getMessageBag();
 
-                if (!array_key_exists('expressable_type', $data) || !array_key_exists('expressable_id', $data) || !array_key_exists('expression_type_id', $data) || !array_key_exists('expression', $data))
+                if (!array_key_exists('expressable_type', $data) || !array_key_exists('expressable_id', $data) || !array_key_exists('expression_type_id', $data) || !array_key_exists('expression', $data)) {
                     return;
+                }
 
                 if (!class_exists($data['expressable_type'])) {
                     $validator->errors()->add('Invalid Parameter', 'Expressable model class not found: '.$data['expressable_type']);
+
                     return;
                 }
 
@@ -76,6 +78,7 @@ class StoreExpressionRequest extends FormRequest
                 $expressableModel = ExpressableModel::where('expressable_type', $data['expressable_type'])->where('expression_type_id', $data['expression_type_id'])->first();
                 if (is_null($expressableModel)) {
                     $validator->errors()->add('Invalid Parameter', 'Expressable model not found: incorrect expressable_type or expression_type_id');
+
                     return;
                 }
 
@@ -85,6 +88,7 @@ class StoreExpressionRequest extends FormRequest
                 $expressableObject = $data['expressable_type']::where('id', $data['expressable_id'])->first();
                 if (is_null($expressableObject)) {
                     $validator->errors()->add('Invalid Parameter', 'Expressable object not found: incorrect expressable_type or expressable_id');
+
                     return;
                 }
                 //}
@@ -100,12 +104,14 @@ class StoreExpressionRequest extends FormRequest
                 $expressionIsInt = is_numeric($data['expression']) && strpos($data['expression'], '.') == false;
                 if ($expressionType->isRangeInt() && !$expressionIsInt) {
                     $validator->errors()->add('Invalid Parameter', 'Invalid expression value: should be integer');
+
                     return;
                 }
 
                 // Check: is expression value in the expressionType range
                 if (!($data['expression'] >= $expressionType->min && $data['expression'] <= $expressionType->max)) {
                     $validator->errors()->add('Invalid Parameter', 'Invalid expression value: should be within min-max range');
+
                     return;
                 }
             }

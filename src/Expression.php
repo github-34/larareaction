@@ -30,7 +30,7 @@ class Expression extends Model
      *
      * @var array
      */
-    protected $guarded = [ ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be cast to native types.

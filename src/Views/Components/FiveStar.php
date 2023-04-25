@@ -7,7 +7,7 @@ use Illuminate\View\Component;
 class FiveStar extends Component
 {
     /**
-     * Object of Expression
+     * Object of Expression.
      *
      * @var string
      */
@@ -36,7 +36,7 @@ class FiveStar extends Component
     }
 
     /**
-     * Get the formatted expressions count
+     * Get the formatted expressions count.
      *
      * @return string
      */
@@ -44,11 +44,13 @@ class FiveStar extends Component
     {
         $countString = $expressionCount;
 
-        if ($expressionCount > 999 && $expressionCount < 1000000)
-            $countString = floor($expressionCount / 1000)."k+";
+        if ($expressionCount > 999 && $expressionCount < 1000000) {
+            $countString = floor($expressionCount / 1000).'k+';
+        }
 
-        if ($expressionCount > 1000000 && $expressionCount < 100000000)
-            $countString = floor($expressionCount / 1000000)."M+";
+        if ($expressionCount > 1000000 && $expressionCount < 100000000) {
+            $countString = floor($expressionCount / 1000000).'M+';
+        }
 
         return (string) $countString;
     }

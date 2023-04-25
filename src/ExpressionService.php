@@ -5,17 +5,13 @@ namespace Insomnicles\Laraexpress;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
-use Insomnicles\Laraexpress\ExpressableModel;
-use Insomnicles\Laraexpress\Expression;
-use Insomnicles\Laraexpress\ExpressionType;
-
 class ExpressionService
 {
-
     public function obtainAll(): Collection
     {
         return Expression::all();
     }
+
     public function obtain(int $id): Expression
     {
         return Expression::findOrFail($id);
@@ -24,34 +20,35 @@ class ExpressionService
     public function storeOrUpdate(array $validatedInput): Expression
     {
         $expression = Expression::where([
-            'expressable_type' => $validatedInput['expressable_type'],
-            'expressable_id' => $validatedInput['expressable_id'],
+            'expressable_type'   => $validatedInput['expressable_type'],
+            'expressable_id'     => $validatedInput['expressable_id'],
             'expression_type_id' => $validatedInput['expression_type_id'],
-            'user_id' => Auth::user()->id,
+            'user_id'            => Auth::user()->id,
         ])->first();
 
         $inputExpression = $validatedInput['expression'];
-        $expressionValue = (is_numeric($inputExpression) && strpos($inputExpression, ".") !== false) ? floatval($inputExpression) : intval($inputExpression);
+        $expressionValue = (is_numeric($inputExpression) && strpos($inputExpression, '.') !== false) ? floatval($inputExpression) : intval($inputExpression);
 
         // Create new Expression
-        if (is_null($expression))
+        if (is_null($expression)) {
             return Expression::create([
-                'expressable_type' => $validatedInput['expressable_type'],
-                'expressable_id' => $validatedInput['expressable_id'],
+                'expressable_type'   => $validatedInput['expressable_type'],
+                'expressable_id'     => $validatedInput['expressable_id'],
                 'expression_type_id' => $validatedInput['expression_type_id'],
-                'user_id' => Auth::user()->id,
-                'expression' => $expressionValue,
-                'created_from' => $this->getIP()
+                'user_id'            => Auth::user()->id,
+                'expression'         => $expressionValue,
+                'created_from'       => $this->getIP(),
             ]);
+        }
 
         // Update Existing Expression
         $updatedExpression = $expression->fill([
-            'expressable_type' => $validatedInput['expressable_type'],
-            'expressable_id' => $validatedInput['expressable_id'],
+            'expressable_type'   => $validatedInput['expressable_type'],
+            'expressable_id'     => $validatedInput['expressable_id'],
             'expression_type_id' => $validatedInput['expression_type_id'],
-            'user_id' => Auth::user()->id,
-            'expression' => $expressionValue,
-            'updated_from' => $this->getIP()
+            'user_id'            => Auth::user()->id,
+            'expression'         => $expressionValue,
+            'updated_from'       => $this->getIP(),
         ]);
         $updatedExpression->save();
 
@@ -75,76 +72,81 @@ class ExpressionService
         return ExpressionType::findOrFail($id);
     }
 
-    public function obtainExpressableModel(String $expressableType) : Object
+    public function obtainExpressableModel(string $expressableType): object
     {
         return ExpressableModel::where('expressable_type', $expressableType)->get();
     }
+
     // assumption expressable objects are all of the same kind: i.e. images, or users,etc.
-    public function obtainExpressableInfo(Collection $expressableObjects) : array
+    public function obtainExpressableInfo(Collection $expressableObjects): array
     {
-        if ($expressableObjects->isEmpty())
+        if ($expressableObjects->isEmpty()) {
             return [
                 'images' => [],
-                'stats' => [ 'count' => 0, 'avg' => 0]
+                'stats'  => ['count' => 0, 'avg' => 0],
             ];
+        }
 
         $expressableInfo = $expressionTypes = $stats = [];
 
         $expressableType = get_class($expressableObjects->first());
         $expressableModels = $this->obtainExpressableModel($expressableType);
 
-        foreach ($expressableModels as $expressableModel)
+        foreach ($expressableModels as $expressableModel) {
             $expressionTypes[$expressableModel->expression_type_id] = $this->obtainExpressionType($expressableModel->expression_type_id);
+        }
 
-        foreach ($expressableObjects as $object)
-        {
+        foreach ($expressableObjects as $object) {
             $userExpressions = Expression::where('expressable_type', $expressableType)
                                     ->where('expressable_id', $object->id)
                                     ->where('user_id', Auth::user()->id)
                                     ->get();
-            foreach ($expressionTypes as $expressionType)
+            foreach ($expressionTypes as $expressionType) {
                 $stats[$expressionType->id] = $this->stats($expressableType, $object->id, $expressionType);
+            }
 
             $userExpressionsGrouped = $userExpressions->groupBy('expression_type_id');
 
             array_push($expressableInfo, [
-                    'expressable_object' => $object->toArray(),
-                    'expressable_type' => $expressableType,                     // App\Models\Image
-                    'expression_types' => $expressionTypes,                     // Like/Dislike
-                    'user_expressions' => $userExpressionsGrouped->toArray(),
-                    'stats' => $stats,
-                 ]);
+                'expressable_object' => $object->toArray(),
+                'expressable_type'   => $expressableType,                     // App\Models\Image
+                'expression_types'   => $expressionTypes,                     // Like/Dislike
+                'user_expressions'   => $userExpressionsGrouped->toArray(),
+                'stats'              => $stats,
+            ]);
         }
+
         return $expressableInfo;
     }
 
-    public function stats(String $expressable_type, int $expressable_id, ExpressionType $expressionType)
+    public function stats(string $expressable_type, int $expressable_id, ExpressionType $expressionType)
     {
-        $expressions = Expression::where('expressable_id', $expressable_id)->where('expressable_type',$expressable_type)->get();
+        $expressions = Expression::where('expressable_id', $expressable_id)->where('expressable_type', $expressable_type)->get();
         $avg = $expressions->avg('expression');
         $count = $expressions->count();
 
         if ($expressionType->isRangeInt()) {
             $valueGrp = $expressions->groupBy('expression');
             $valueCounts = [];
-            foreach ($valueGrp as $key => $grp)
+            foreach ($valueGrp as $key => $grp) {
                 $valueCounts[$key] = $grp->count();
+            }
 
             return [
-                'avg' => $avg,
-                'count' => $count,
+                'avg'          => $avg,
+                'count'        => $count,
                 'value_counts' => $valueCounts,
             ];
         }
 
         // float values
         return [
-            'avg' => $avg,
+            'avg'   => $avg,
             'count' => $count,
         ];
     }
 
-    public function express(Object $object, $expression_type_id, $value)
+    public function express(object $object, $expression_type_id, $value)
     {
         // extract from object expressable_type, expressable_id
         // validate expressable_type, expressable_id - can it be express to?
@@ -158,7 +160,7 @@ class ExpressionService
     // different class or traits
     public function getIP()
     {
-        foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key) {
+        foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'] as $key) {
             if (array_key_exists($key, $_SERVER) === true) {
                 foreach (explode(',', $_SERVER[$key]) as $ip) {
                     $ip = trim($ip); // just to be safe
@@ -168,6 +170,7 @@ class ExpressionService
                 }
             }
         }
+
         return request()->ip(); // it will return server ip when no client ip found
     }
 }
