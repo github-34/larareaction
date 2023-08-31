@@ -35,6 +35,7 @@ A simple way of handling expressions, reactions and ratings in Laravel.
 
 ```
 composer require insomnicles/laraexpress
+php artisan vendor:publish
 ```
 
 ## Usage
